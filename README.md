@@ -17,17 +17,17 @@ A full-stack rental platform with blockchain-based agreement storage.
 ## Setup Instructions
 
 ### 1. Backend
-cd backend
-npm install
-npm start
+cd backend<br>
+npm install<br>
+npm start<br>
 
 ### 2. Frontend
-cd frontend
-npm install
-npm run dev
+cd frontend<br>
+npm install<br> 
+npm run dev<br>
 
 ### 3. Blockchain
-cd blockchain
-npm install
-npx hardhat node
-npx hardhat run scripts/deploy.js --network localhost
+cd blockchain<br>
+npm install<br>
+npx hardhat node<br>
+npx hardhat run scripts/deploy.js --network localhost<br>
