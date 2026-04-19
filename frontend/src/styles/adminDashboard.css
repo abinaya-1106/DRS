@@ -1,0 +1,107 @@
+/* ================= RESET ================= */
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; padding: 0; font-family: "Inter", sans-serif; background: #f9fafb; }
+
+/* ================= PAGE WRAPPER ================= */
+.admin-dashboard { min-height: 100vh; padding-top: 64px; background: #f9fafb; }
+
+/* ================= NAVBAR ================= */
+.admin-dashboard .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 64px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(90deg, #1e3a8a, #2563eb); color: white; z-index: 1000; }
+.admin-dashboard .logo { font-size: 1.5rem; font-weight: 700; }
+.admin-dashboard .nav-buttons { display: flex; align-items: center; gap: 12px; }
+.admin-dashboard .profile-btn { padding: 8px 18px; border-radius: 10px; border: none; background: white; color: #1e3a8a; font-weight: 600; cursor: pointer; }
+.admin-dashboard .profile-btn:hover { background: #f3f4f6; }
+.admin-dashboard .logout-btn { padding: 8px 18px; border-radius: 10px; border: none; background: #ef4444; color: white; font-weight: 600; cursor: pointer; }
+.admin-dashboard .logout-btn:hover { background: #dc2626; }
+
+/* ================= DASHBOARD WRAPPER ================= */
+.admin-dashboard .dashboard-wrapper { display: flex; height: calc(100vh - 64px); }
+
+/* ================= LEFT COLUMN ================= */
+.admin-dashboard .left-column { width: 280px; flex-shrink: 0; background: #1f2937; padding: 32px 20px; height: calc(100vh - 64px); overflow-y: auto; scrollbar-width: none; }
+.admin-dashboard .left-column::-webkit-scrollbar { display: none; }
+.admin-dashboard .column-section { margin-bottom: 32px; }
+.admin-dashboard .column-section h2, .admin-dashboard .column-section h3 { margin: 0 0 16px 0; font-size: 1.1rem; color: #f9fafb; font-weight: 600; }
+
+/* ================= STAT CARDS ================= */
+.admin-dashboard .stat-card { background: #374151; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.admin-dashboard .stat-label { color: #9ca3af; font-size: 0.85rem; }
+.admin-dashboard .stat-value { font-size: 1.4rem; font-weight: 700; color: #f9fafb; }
+.admin-dashboard .pending-color { color: #fbbf24; }
+.admin-dashboard .approved-color { color: #34d399; }
+
+/* ================= TAB BUTTONS ================= */
+.admin-dashboard .tab-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #374151; color: #d1d5db; font-weight: 600; cursor: pointer; margin-bottom: 10px; text-align: left; transition: all 0.2s ease; font-family: inherit; font-size: 0.9rem; }
+.admin-dashboard .tab-btn:hover { background: #4b5563; color: white; }
+.admin-dashboard .tab-btn.active { background: #2563eb; color: white; }
+
+/* ================= MAIN CONTENT ================= */
+.admin-dashboard .dashboard-content { flex: 1; padding: 32px 40px; background: #f9fafb; height: calc(100vh - 64px); overflow-y: auto; scrollbar-width: none; }
+.admin-dashboard .dashboard-content::-webkit-scrollbar { display: none; }
+.admin-dashboard .content-header { margin-bottom: 24px; }
+.admin-dashboard .content-header h2 { font-size: 1.8rem; color: #111827; margin: 0 0 8px 0; }
+.admin-dashboard .property-count { color: #6b7280; font-size: 0.95rem; margin: 0; }
+.admin-dashboard .loading-text, .admin-dashboard .empty-text { text-align: center; padding: 60px 20px; font-size: 1.1rem; color: #6b7280; }
+
+/* ================= PROPERTIES GRID ================= */
+.admin-dashboard .properties-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 1400px) { .admin-dashboard .properties-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) { .admin-dashboard .properties-grid { grid-template-columns: 1fr; } }
+
+/* ================= PROPERTY CARD ================= */
+.admin-dashboard .property-card { background: linear-gradient(180deg, #ffffff, #f8fafc); padding: 20px; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; cursor: pointer; }
+.admin-dashboard .property-card:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.admin-dashboard .property-summary { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.admin-dashboard .property-header h4 { margin: 0 0 6px 0; font-size: 1.1rem; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px; }
+.admin-dashboard .location { color: #6b7280; font-size: 0.85rem; margin: 4px 0; }
+.admin-dashboard .landlord-name { color: #6b7280; font-size: 0.85rem; margin: 4px 0; }
+.admin-dashboard .rent { font-size: 1.2rem; font-weight: 700; color: #2563eb; white-space: nowrap; margin-left: 12px; }
+.admin-dashboard .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #f0f0f0; }
+.admin-dashboard .card-date { color: #9ca3af; font-size: 0.8rem; }
+
+/* ================= STATUS BADGES ================= */
+.admin-dashboard .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.admin-dashboard .status-badge.pending { background: #fef3c7; color: #92400e; }
+.admin-dashboard .status-badge.approved { background: #d1fae5; color: #065f46; }
+
+/* ================= MODAL OVERLAY ================= */
+.admin-dashboard .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+
+/* ================= PROPERTY MODAL ================= */
+.admin-dashboard .property-modal { background: white; border-radius: 20px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: adminSlideUp 0.3s ease; scrollbar-width: none; }
+.admin-dashboard .property-modal::-webkit-scrollbar { display: none; }
+@keyframes adminSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.admin-dashboard .close-btn { position: absolute; top: 16px; right: 16px; background: #f3f4f6; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+.admin-dashboard .close-btn:hover { background: #e5e7eb; }
+.admin-dashboard .modal-header { padding: 28px 28px 20px; border-bottom: 1px solid #f3f4f6; }
+.admin-dashboard .modal-header h3 { margin: 0 0 6px 0; font-size: 1.5rem; color: #1e293b; text-transform: uppercase; }
+.admin-dashboard .rent-large { font-size: 1.8rem; font-weight: 700; color: #2563eb; display: block; margin-top: 8px; }
+.admin-dashboard .modal-content { padding: 24px 28px 28px; }
+.admin-dashboard .title { font-size: 1.1rem; color: #1e293b; margin: 0 0 8px 0; }
+.admin-dashboard .description { color: #6b7280; font-size: 0.95rem; margin: 0 0 20px 0; line-height: 1.6; }
+.admin-dashboard .specs { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+.admin-dashboard .spec-item { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: #374151; background: #f9fafb; padding: 8px 14px; border-radius: 8px; border: 1px solid #e5e7eb; }
+.admin-dashboard .financial-info { background: #f9fafb; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+.admin-dashboard .financial-info p { margin: 6px 0; font-size: 0.95rem; color: #374151; }
+
+/* ================= ACTION BUTTONS ================= */
+.admin-dashboard .action-buttons { display: flex; gap: 12px; }
+.admin-dashboard .approve-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; background: #10b981; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+.admin-dashboard .approve-btn:hover { background: #059669; }
+.admin-dashboard .reject-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; background: #ef4444; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+.admin-dashboard .reject-btn:hover { background: #dc2626; }
+
+/* ================= STATUS INFO ================= */
+.admin-dashboard .status-info { padding: 14px 16px; border-radius: 10px; }
+.admin-dashboard .status-info.approved { background: #d1fae5; color: #065f46; }
+.admin-dashboard .status-info p { margin: 0; font-weight: 500; }
+
+/* ================= PROFILE MODAL ================= */
+.admin-dashboard .profile-modal { background: white; border-radius: 20px; max-width: 440px; width: 100%; padding: 32px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: adminSlideUp 0.3s ease; }
+.admin-dashboard .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+.admin-dashboard .profile-icon { font-size: 3rem; margin-bottom: 8px; }
+.admin-dashboard .profile-header h3 { margin: 0; font-size: 1.4rem; color: #111827; }
+.admin-dashboard .profile-content { display: flex; flex-direction: column; gap: 16px; }
+.admin-dashboard .profile-field label { display: block; font-size: 0.8rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.admin-dashboard .profile-field p { margin: 0; font-size: 1rem; color: #111827; font-weight: 500; }
+.admin-dashboard .role-badge { display: inline-block; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }

@@ -1,0 +1,41 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^1.44.0",
+    "@pinata/sdk": "^2.1.0",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "ethers": "^6.16.0",
+    "express": "^5.2.1",
+    "ipfs-http-client": "^60.0.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
+    "mysql2": "^3.16.2",
+    "node-cron": "^4.2.1",
+    "puppeteer": "^24.38.0"
+  },
+  "name": "decentralised-rental-system",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abinaya-1106/Decentralised-Rental-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abinaya-1106/Decentralised-Rental-System/issues"
+  },
+  "homepage": "https://github.com/abinaya-1106/Decentralised-Rental-System#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

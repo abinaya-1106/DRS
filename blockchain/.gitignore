@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Hardhat build/cache outputs
+artifacts/
+cache/
+
+# Typechain (if generated)
+typechain-types/
+types/
+
+# Coverage and reports
+coverage/
+coverage.json
+gas-report.txt
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+package-lock.json

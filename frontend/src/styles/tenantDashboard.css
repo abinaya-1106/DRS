@@ -1,0 +1,641 @@
+/* ================= RESET ================= */
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; padding: 0; font-family: "Inter", sans-serif; background: #f9fafb; }
+html::-webkit-scrollbar, body::-webkit-scrollbar, .tenant-dashboard .left-column::-webkit-scrollbar, .tenant-dashboard .dashboard-content::-webkit-scrollbar { display: none; }
+html, body, .tenant-dashboard .left-column, .tenant-dashboard .dashboard-content { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ================= PAGE WRAPPER ================= */
+.tenant-dashboard { min-height: 100vh; padding-top: 64px; background: #f9fafb; }
+
+/* ================= NAVBAR ================= */
+.tenant-dashboard .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 64px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; background: linear-gradient(90deg, #1e3a8a, #2563eb); color: white; z-index: 1000; }
+.tenant-dashboard .logo { font-size: 1.5rem; font-weight: 700; white-space: nowrap; }
+
+/* ================= SEARCH BAR ================= */
+.tenant-dashboard .search-bar { flex: 1; max-width: 600px; display: flex; gap: 8px; position: relative; }
+.tenant-dashboard .search-bar input { flex: 1; padding: 10px 16px; border-radius: 10px; border: none; font-size: 0.95rem; outline: none; font-family: inherit; }
+.tenant-dashboard .search-bar input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.3); }
+.tenant-dashboard .search-bar button { padding: 10px 20px; border-radius: 10px; border: none; background: white; color: #1e3a8a; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
+.tenant-dashboard .search-bar button:hover { background: #f3f4f6; }
+.tenant-dashboard .search-bar button:disabled { opacity: 0.7; cursor: not-allowed; }
+.tenant-dashboard .search-bar .clear-btn { background: #ef4444; color: white; padding: 10px 14px; }
+.tenant-dashboard .search-bar .clear-btn:hover { background: #dc2626; }
+.tenant-dashboard .profile-btn { padding: 8px 18px; border-radius: 10px; border: none; background: white; color: #1e3a8a; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.tenant-dashboard .profile-btn:hover { background: #f3f4f6; }
+
+/* ================= DASHBOARD WRAPPER ================= */
+.tenant-dashboard .dashboard-wrapper { display: flex; gap: 0; height: calc(100vh - 64px); }
+
+/* ================= LEFT COLUMN ================= */
+.tenant-dashboard .left-column { width: 300px; flex-shrink: 0; background: #1f2937; padding: 24px 20px; height: calc(100vh - 64px); overflow-y: auto; }
+.tenant-dashboard .column-section { background: transparent; border-radius: 0; padding: 0; margin-bottom: 32px; box-shadow: none; }
+.tenant-dashboard .column-section h3 { margin: 0 0 16px 0; font-size: 1.1rem; color: #f9fafb; font-weight: 600; }
+.tenant-dashboard .no-properties { color: #9ca3af; font-size: 0.9rem; text-align: center; margin: 20px 0; font-style: italic; }
+.tenant-dashboard .column-properties { display: flex; flex-direction: column; gap: 12px; }
+.tenant-dashboard .column-property-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s ease; }
+.tenant-dashboard .column-property-card:hover { background: #f3f4f6; border-color: #2563eb; }
+.tenant-dashboard .column-property-card h4 { margin: 0 0 6px 0; font-size: 0.95rem; color: #1f2937; text-transform: uppercase; }
+.tenant-dashboard .column-property-card p { margin: 4px 0; font-size: 0.85rem; color: #6b7280; }
+.tenant-dashboard .column-property-card .price { color: #2563eb; font-weight: 700; font-size: 0.9rem; }
+
+.tenant-dashboard .column-items { display: flex; flex-direction: column; gap: 12px; }
+.tenant-dashboard .column-item-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s ease; }
+.tenant-dashboard .column-item-card:hover { background: #f3f4f6; border-color: #2563eb; }
+.tenant-dashboard .column-item-card h4 { margin: 0 0 6px 0; font-size: 0.95rem; color: #1f2937; font-weight: 600; }
+.tenant-dashboard .column-item-card p { margin: 4px 0; font-size: 0.85rem; color: #6b7280; }
+.tenant-dashboard .column-item-card .item-date { color: #9ca3af; font-size: 0.8rem; }
+
+/* ================= ACTIVE CARD (left panel) ================= */
+.tenant-dashboard .active-card { border-left: 3px solid #22c55e; }
+
+/* ================= MAIN CONTENT ================= */
+.tenant-dashboard .dashboard-content { flex: 1; padding: 32px 40px; background: #f9fafb; height: calc(100vh - 64px); overflow-y: auto; }
+.tenant-dashboard .content-header { margin-bottom: 24px; }
+.tenant-dashboard .content-header h2 { font-size: 1.8rem; color: #111827; margin: 0 0 8px 0; }
+.tenant-dashboard .property-count { color: #6b7280; font-size: 0.95rem; margin: 0; }
+.tenant-dashboard .loading-text, .tenant-dashboard .empty-text { text-align: center; padding: 60px 20px; font-size: 1.1rem; color: #6b7280; }
+
+/* ================= PROPERTIES GRID ================= */
+.tenant-dashboard .properties-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 1400px) { .tenant-dashboard .properties-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 1024px) {
+  .tenant-dashboard .dashboard-wrapper { flex-direction: column; }
+  .tenant-dashboard .left-column { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 24px 32px; overflow-y: visible; }
+  .tenant-dashboard .column-section { margin-bottom: 0; }
+  .tenant-dashboard .properties-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .tenant-dashboard .left-column { grid-template-columns: 1fr; padding: 24px 16px 20px; }
+  .tenant-dashboard .properties-grid { grid-template-columns: 1fr; }
+}
+
+/* ================= PROPERTY CARD ================= */
+.tenant-dashboard .property-card { background: linear-gradient(180deg, #ffffff, #f8fafc); padding: 0; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; }
+.tenant-dashboard .property-card:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
+
+/* ── Card image ── */
+.tenant-dashboard .property-card-image { width: 100%; height: 160px; overflow: hidden; background: #e5e7eb; flex-shrink: 0; }
+.tenant-dashboard .property-card-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+.tenant-dashboard .property-card:hover .property-card-image img { transform: scale(1.05); }
+.tenant-dashboard .property-card-image--placeholder { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #e5e7eb, #f3f4f6); }
+.tenant-dashboard .property-card-image--placeholder span { font-size: 2.5rem; opacity: 0.4; }
+
+/* ── Card body ── */
+.tenant-dashboard .property-card-body { padding: 16px 20px 20px; position: relative; }
+.tenant-dashboard .property-summary { display: flex; justify-content: space-between; align-items: flex-start; }
+.tenant-dashboard .property-header h4 { margin: 0 0 8px 0; font-size: 1.2rem; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px; }
+.tenant-dashboard .location { color: #6b7280; font-size: 0.9rem; margin: 0; display: flex; align-items: center; gap: 4px; }
+.tenant-dashboard .rent { font-size: 1.3rem; font-weight: 700; color: #2563eb; white-space: nowrap; margin-left: 12px; }
+
+/* ================= MODAL OVERLAY ================= */
+.tenant-dashboard .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+
+/* ================= PROPERTY MODAL ================= */
+.tenant-dashboard .property-modal { background: white; border-radius: 20px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.tenant-dashboard .close-btn { position: absolute; top: 10px; right: 10px; background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s ease; }
+.tenant-dashboard .close-btn:hover { background: #e5e7eb; transform: rotate(90deg); }
+.tenant-dashboard .modal-header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 32px 32px 24px; border-radius: 20px 20px 0 0; }
+.tenant-dashboard .modal-header h3 { margin: 0 0 8px 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.tenant-dashboard .modal-header .location { color: rgba(255,255,255,0.9); margin: 0 0 12px 0; font-size: 1rem; }
+.tenant-dashboard .rent-large { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px; font-size: 1.4rem; font-weight: 700; }
+.tenant-dashboard .modal-content { padding: 28px 32px 32px; }
+.tenant-dashboard .modal-content .title { font-size: 1.3rem; color: #111827; margin: 0 0 12px 0; }
+.tenant-dashboard .modal-content .description { color: #374151; line-height: 1.6; margin: 0 0 20px 0; font-size: 1rem; }
+
+/* ================= SPECS ================= */
+.tenant-dashboard .specs { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.tenant-dashboard .spec-item { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; font-size: 0.95rem; color: #475569; font-weight: 500; }
+.tenant-dashboard .spec-icon { font-size: 1.2rem; }
+
+/* ================= FINANCIAL INFO ================= */
+.tenant-dashboard .financial-info { background: #eff6ff; padding: 14px 16px; border-radius: 10px; margin-bottom: 20px; }
+.tenant-dashboard .financial-info p { margin: 6px 0; color: #1e40af; font-size: 1rem; font-weight: 500; }
+.tenant-dashboard .financial-info p:first-child { margin-top: 0; }
+.tenant-dashboard .financial-info p:last-child { margin-bottom: 0; }
+
+/* ================= LANDLORD INFO ================= */
+.tenant-dashboard .landlord-info { background: #f9fafb; padding: 16px 18px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
+.tenant-dashboard .landlord-info h6 { margin: 0 0 12px 0; font-size: 1.05rem; color: #111827; font-weight: 600; }
+.tenant-dashboard .landlord-info p { margin: 8px 0; color: #374151; font-size: 0.95rem; line-height: 1.6; }
+.tenant-dashboard .landlord-info b { color: #1f2937; font-weight: 600; }
+
+/* ================= TERMS ================= */
+.tenant-dashboard .terms-section { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; }
+.tenant-dashboard .terms-section p { margin: 0 0 6px 0; color: #374151; font-size: 0.95rem; }
+.tenant-dashboard .terms-text { white-space: pre-wrap; color: #6b7280 !important; font-size: 0.9rem !important; }
+
+/* ================= MODAL IMAGE GALLERY ================= */
+.tenant-dashboard .modal-image-gallery {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+.tenant-dashboard .modal-gallery-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+.tenant-dashboard .modal-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.tenant-dashboard .modal-gallery-img--cover {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 7;
+}
+.tenant-dashboard .modal-gallery-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+}
+.tenant-dashboard .modal-gallery-img:hover {
+  transform: scale(1.03);
+  border-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+}
+.tenant-dashboard .modal-gallery-img--cover {
+  border-color: #2563eb;
+}
+@media (max-width: 480px) {
+  .tenant-dashboard .modal-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .tenant-dashboard .modal-gallery-img--cover { grid-column: 1 / -1; }
+}
+
+/* ================= DURATION REQUEST GROUP ================= */
+.tenant-dashboard .duration-request-group { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+.tenant-dashboard .duration-input-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; border-radius: 10px; padding: 12px 16px; gap: 16px; }
+.tenant-dashboard .duration-input-row label { font-size: 0.95rem; font-weight: 600; color: #374151; white-space: nowrap; }
+.tenant-dashboard .duration-input { width: 90px; padding: 8px 10px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 1rem; font-family: inherit; color: #111827; text-align: center; }
+.tenant-dashboard .duration-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+/* ================= REQUEST PROPERTY BUTTON ================= */
+.tenant-dashboard .contact-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(90deg, #2563eb, #1e40af); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; font-family: inherit; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+.tenant-dashboard .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37,99,235,0.4); }
+.tenant-dashboard .contact-btn:active { transform: scale(0.98); }
+
+/* ================= REQUEST AGAIN BUTTON ================= */
+.tenant-dashboard .request-again-btn { padding: 8px 12px; border-radius: 8px; border: none; background: linear-gradient(90deg, #2563eb, #1e40af); color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(37,99,235,0.3); margin-top: 8px; }
+.tenant-dashboard .request-again-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+
+/* ================= CANCEL REQUEST BUTTON ================= */
+.tenant-dashboard .cancel-request-btn { padding: 8px 12px; border-radius: 8px; border: none; background: linear-gradient(90deg, #ef4444, #dc2626); color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(239,68,68,0.3); margin-top: 8px; }
+.tenant-dashboard .cancel-request-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+
+/* ================= NAVBAR BUTTONS ================= */
+.tenant-dashboard .nav-buttons { display: flex; gap: 12px; align-items: center; }
+.tenant-dashboard .logout-btn { padding: 8px 18px; border-radius: 10px; border: none; background: #ef4444; color: white; font-weight: 600; cursor: pointer; transition: background 0.2s ease; }
+.tenant-dashboard .logout-btn:hover { background: #dc2626; }
+
+/* ================= PROFILE MODAL ================= */
+.tenant-dashboard .profile-modal { background: white; border-radius: 20px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; }
+.tenant-dashboard .profile-header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 32px; border-radius: 20px 20px 0 0; text-align: center; }
+.tenant-dashboard .profile-icon { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 16px; }
+.tenant-dashboard .profile-header h3 { margin: 0; font-size: 1.6rem; }
+.tenant-dashboard .profile-content { padding: 28px 32px 32px; }
+.tenant-dashboard .profile-field { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; }
+.tenant-dashboard .profile-field:last-child { border-bottom: none; margin-bottom: 0; }
+.tenant-dashboard .profile-field label { display: block; font-size: 0.85rem; color: #6b7280; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.tenant-dashboard .profile-field p { margin: 0; font-size: 1.1rem; color: #111827; font-weight: 500; }
+.tenant-dashboard .role-badge { display: inline-block; padding: 6px 14px; background: #dbeafe; color: #1e40af; border-radius: 6px; font-weight: 600; text-transform: uppercase; font-size: 0.9rem !important; }
+
+/* ================= STATUS BADGES ================= */
+.tenant-dashboard .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-top: 8px; }
+.tenant-dashboard .status-badge.pending { background: #fef3c7; color: #92400e; }
+.tenant-dashboard .status-badge.approved { background: #d1fae5; color: #065f46; }
+.tenant-dashboard .status-badge.active { background: #dcfce7; color: #166534; }
+.tenant-dashboard .status-badge.rejected { background: #fee2e2; color: #991b1b; }
+.tenant-dashboard .status-badge-large { display: inline-block; padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-top: 12px; background: rgba(255,255,255,0.3); }
+
+.tenant-dashboard .card-bottom-row { display: flex; align-items: center; justify-content: flex-start; gap: 10px; margin-top: 8px; }
+.tenant-dashboard .review-btn { padding: 6px 10px; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: 600; cursor: pointer; font-family: inherit; }
+.tenant-dashboard .review-btn:hover { background: #1d4ed8; }
+
+/* ================= REQUESTED OVERLAY ================= */
+.tenant-dashboard .requested-overlay { position: absolute; top: 50px; right: 0; background: rgba(37,99,235,0.9); color: white; padding: 6px 12px; border-radius: 0 0 0 8px; font-size: 0.85rem; font-weight: 600; }
+.tenant-dashboard .requested-label { display: flex; align-items: center; gap: 4px; }
+
+/* ================= REJECTED OVERLAY ================= */
+.tenant-dashboard .rejected-overlay { position: absolute; top: 50px; right: 0; background: rgba(220,38,38,0.9); color: white; padding: 6px 12px; border-radius: 0 0 0 8px; font-size: 0.85rem; font-weight: 600; }
+.tenant-dashboard .rejected-label { display: flex; align-items: center; gap: 4px; }
+
+/* ================= REQUESTED BUTTON (already applied) ================= */
+.tenant-dashboard .requested-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: #9ca3af; color: white; font-weight: 600; font-size: 1rem; cursor: not-allowed; font-family: inherit; opacity: 0.7; }
+
+/* ================= RENTAL DETAILS SECTION ================= */
+.tenant-dashboard .rental-details-section { background: #f9fafb; padding: 16px 18px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #e5e7eb; }
+.tenant-dashboard .rental-details-section h6 { margin: 0 0 12px 0; font-size: 1.05rem; color: #111827; font-weight: 600; }
+.tenant-dashboard .rental-details-section p { margin: 8px 0; color: #374151; font-size: 0.95rem; line-height: 1.6; }
+.tenant-dashboard .rental-details-section b { color: #1f2937; font-weight: 600; }
+
+/* ================= STATUS INFO ================= */
+.tenant-dashboard .status-info { padding: 16px 18px; border-radius: 10px; margin-top: 20px; text-align: center; }
+.tenant-dashboard .status-info.pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.tenant-dashboard .status-info.approved { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.tenant-dashboard .status-info.active { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.tenant-dashboard .status-info.rejected { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.tenant-dashboard .status-info p { margin: 0 0 14px 0; font-weight: 500; font-size: 0.95rem; }
+.tenant-dashboard .status-info p:only-child { margin-bottom: 0; }
+
+/* ================= AGREEMENT ACTIONS ================= */
+.tenant-dashboard .agreement-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.tenant-dashboard .agreement-action-btn { width: 100%; padding: 11px 16px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+.tenant-dashboard .agreement-action-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.tenant-dashboard .agreement-action-btn.view-btn { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
+.tenant-dashboard .agreement-action-btn.view-btn:hover:not(:disabled) { background: #e0f2fe; transform: translateY(-1px); }
+.tenant-dashboard .agreement-action-btn.sign-btn { background: #7c3aed; color: #fff; }
+.tenant-dashboard .agreement-action-btn.sign-btn:hover:not(:disabled) { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.35); }
+.tenant-dashboard .agreement-action-btn.view-btn.active-view { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; margin-top: 4px; }
+.tenant-dashboard .agreement-action-btn.view-btn.active-view:hover:not(:disabled) { background: #bfdbfe; transform: translateY(-1px); }
+
+/* ================= PROFILE EDIT FORM ================= */
+.tenant-dashboard .profile-edit-form { padding: 28px 32px 32px; }
+.tenant-dashboard .form-group { margin-bottom: 20px; }
+.tenant-dashboard .form-group label { display: block; font-size: 0.85rem; color: #6b7280; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.tenant-dashboard .form-group input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 1rem; font-family: inherit; color: #111827; }
+.tenant-dashboard .form-group input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.tenant-dashboard .edit-profile-btn { width: 100%; padding: 12px 20px; border-radius: 10px; border: none; background: #2563eb; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 24px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.tenant-dashboard .edit-profile-btn:hover { background: #1e40af; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+.tenant-dashboard .profile-form-buttons { display: flex; gap: 12px; margin-top: 24px; }
+.tenant-dashboard .save-btn { flex: 1; padding: 12px 20px; border-radius: 10px; border: none; background: #10b981; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
+.tenant-dashboard .save-btn:hover { background: #059669; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+.tenant-dashboard .cancel-btn { flex: 1; padding: 12px 20px; border-radius: 10px; border: none; background: #e5e7eb; color: #111827; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
+.tenant-dashboard .cancel-btn:hover { background: #d1d5db; }
+
+/* ================= WALLET STYLES ================= */
+.tenant-dashboard .wallet-indicator { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 14px; font-size: 0.85rem; font-weight: 600; color: white; white-space: nowrap; }
+.tenant-dashboard .wallet-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; flex-shrink: 0; }
+.tenant-dashboard .wallet-short { font-family: monospace; letter-spacing: 0.5px; }
+.tenant-dashboard .wallet-address-display { display: flex; align-items: flex-start; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 12px; margin-top: 4px; }
+.tenant-dashboard .wallet-dot-green { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; flex-shrink: 0; margin-top: 5px; }
+.tenant-dashboard .wallet-full { font-family: monospace; font-size: 0.85rem !important; color: #065f46 !important; word-break: break-all; margin: 0 !important; font-weight: 500 !important; }
+.tenant-dashboard .wallet-not-connected { color: #9ca3af !important; font-style: italic; font-size: 0.95rem !important; }
+
+/* ================= AGREEMENT LOADING OVERLAY ================= */
+.tenant-dashboard .agreement-loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 3000; }
+.tenant-dashboard .agreement-loading-box { background: white; border-radius: 20px; padding: 40px 52px; display: flex; flex-direction: column; align-items: center; gap: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.25); text-align: center; min-width: 300px; animation: slideUp 0.25s ease; }
+.tenant-dashboard .agreement-spinner { width: 52px; height: 52px; border: 4px solid #e5e7eb; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.75s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tenant-dashboard .agreement-loading-box p { margin: 0; font-size: 1.05rem; font-weight: 600; color: #111827; }
+.tenant-dashboard .agreement-loading-box span { font-size: 0.85rem; color: #6b7280; }
+
+/* ================= LIGHTBOX ================= */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.lightbox-img-wrap {
+  position: relative;
+  max-width: 88vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.lightbox-img {
+  max-width: 88vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  display: block;
+  animation: zoomIn 0.2s ease;
+}
+@keyframes zoomIn { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.lightbox-counter {
+  margin-top: 14px;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 4001;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
+.lightbox-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 4001;
+  padding-bottom: 2px;
+}
+.lightbox-arrow:hover { background: rgba(255,255,255,0.25); transform: translateY(-50%) scale(1.1); }
+.lightbox-arrow--prev { left: 20px; }
+.lightbox-arrow--next { right: 20px; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .tenant-dashboard .navbar { padding: 0 16px; flex-wrap: wrap; height: auto; min-height: 64px; gap: 12px; }
+  .tenant-dashboard .nav-buttons { order: 2; gap: 8px; }
+  .tenant-dashboard .search-bar { order: 3; width: 100%; max-width: 100%; padding: 8px 0; }
+  .tenant-dashboard .left-column { grid-template-columns: 1fr; padding: 20px 16px; overflow-y: visible; }
+  .tenant-dashboard .dashboard-content { padding: 16px; }
+  .tenant-dashboard .content-header h2 { font-size: 1.4rem; }
+  .tenant-dashboard .specs { flex-direction: column; gap: 8px; }
+  .tenant-dashboard .duration-input-row { flex-direction: column; align-items: flex-start; }
+  .tenant-dashboard .duration-input { width: 100%; }
+  .lightbox-arrow--prev { left: 8px; }
+  .lightbox-arrow--next { right: 8px; }
+  .lightbox-arrow { width: 38px; height: 38px; font-size: 1.5rem; }
+}
+/*
+  =============================================================
+  ADDITIONS TO PASTE AT THE END OF:
+    - tenantDashboard.css
+    - landlordDashboard.css
+  =============================================================
+*/
+
+/* ================= COMMUNITY BUTTON ================= */
+.tenant-dashboard .community-btn {
+  padding: 8px 18px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.3);
+}
+.tenant-dashboard .community-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124,58,237,0.45);
+}
+
+/* ================= CARD BOTTOM ROW ================= */
+.tenant-dashboard .card-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 8px;
+}
+
+/* ================= RAISE ISSUE BUTTON (left panel) ================= */
+.tenant-dashboard .raise-issue-btn {
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd6fe;
+  background: #f5f3ff;
+  color: #7c3aed;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.tenant-dashboard .raise-issue-btn:hover {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+
+/* ================= RAISE ISSUE BUTTON (inside modal) ================= */
+.tenant-dashboard .raise-issue-modal-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid #ddd6fe;
+  background: #f5f3ff;
+  color: #7c3aed;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+.tenant-dashboard .raise-issue-modal-btn:hover {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+
+/* ================= RAISE DISPUTE MODAL ================= */
+.tenant-dashboard .raise-dispute-modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s ease;
+}
+.tenant-dashboard .raise-dispute-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 28px 20px;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed);
+  border-radius: 20px 20px 0 0;
+  font-size: 2rem;
+}
+.tenant-dashboard .raise-dispute-header h3 {
+  margin: 0 0 4px; font-size: 1.25rem; color: white; font-weight: 700;
+}
+.tenant-dashboard .raise-dispute-subtitle {
+  margin: 0; font-size: 0.85rem; color: rgba(255,255,255,0.75);
+}
+.tenant-dashboard .raise-dispute-form {
+  padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.tenant-dashboard .raise-dispute-form textarea,
+.tenant-dashboard .raise-dispute-form input[type="url"] {
+  width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid #e5e7eb;
+  font-size: 0.92rem; font-family: inherit; color: #111827; background: #fafafa;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tenant-dashboard .raise-dispute-form textarea:focus,
+.tenant-dashboard .raise-dispute-form input[type="url"]:focus {
+  outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); background: white;
+}
+.tenant-dashboard .raise-dispute-form textarea { resize: vertical; min-height: 110px; }
+.tenant-dashboard .raise-dispute-actions { display: flex; gap: 10px; margin-top: 4px; }
+.tenant-dashboard .raise-submit-btn {
+  flex: 1; padding: 12px 20px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;
+  font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; font-family: inherit;
+}
+.tenant-dashboard .raise-submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px); box-shadow: 0 4px 14px rgba(124,58,237,0.4);
+}
+.tenant-dashboard .raise-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ================= NOTIFICATION BUTTON ================= */
+.tenant-dashboard .notification-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tenant-dashboard .notification-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+.tenant-dashboard .notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* ================= NOTIFICATIONS MODAL ================= */
+.tenant-dashboard .notifications-modal {
+  background: white;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 40px 18px 18px;
+  position: relative;
+}
+.tenant-dashboard .notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+  padding-top: 10px;
+}
+.tenant-dashboard .notifications-header h3 {
+  margin: 0;
+}
+.tenant-dashboard .notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tenant-dashboard .notification-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #f9fafb;
+}
+.tenant-dashboard .notification-item.unread {
+  background: #eef2ff;
+}
+.tenant-dashboard .notification-item.clickable {
+  cursor: pointer;
+}
+.tenant-dashboard .notification-item.clickable:hover {
+  background: #f3f4f6;
+}
+.tenant-dashboard .notification-item .notification-message {
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+  color: #111827;
+}
+.tenant-dashboard .notification-item .notification-meta {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+.tenant-dashboard .no-notifications {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+}
+.tenant-dashboard .review-modal {
+  background: white;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 420px;
+  padding: 22px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+.tenant-dashboard .review-modal h3 {
+  margin: 0 0 10px 0;
+}
+.tenant-dashboard .review-modal .form-group {
+  margin: 14px 0;
+}
+.tenant-dashboard .review-modal .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #374151;
+  font-weight: 600;
+}
+.tenant-dashboard .review-modal .form-group input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+.tenant-dashboard .property-rating {
+  font-size: 0.85rem;
+  color: #f59e0b;
+  margin: 4px 0 0;
+  font-weight: 600;
+}
