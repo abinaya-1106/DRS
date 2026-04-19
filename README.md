@@ -1,7 +1,7 @@
 # Decentralized Rental System
 
 ## Overview
-A full-stack rental platform with blockchain-based agreement storage.
+A full-stack rental platform with blockchain-based agreement storage, rent payment and dispute resolution.
 
 ## Tech Stack
 - Frontend: React (Vite)
